@@ -15,11 +15,10 @@ Features
 Roadmap
 -------------------------------------
  version 0.1 include:
-
-* stand-alone dashboard;
-* QQ email;
-* chrome desktop notification;
-* html report;
+ * stand-alone dashboard;
+ * QQ email;
+ * chrome desktop notification;
+ * html report;
 
  version 0.2 include:
 
