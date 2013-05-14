@@ -1,7 +1,7 @@
 Logtoeye
 =====================================
 Logtoeye is a realtime data visualization platform based on django/socket.io/gevent-socketio,
-it' dashboard can display metric/non-metric data instantly pushed from various socket.io client.
+it's dashboard can display metric/non-metric data instantly pushed from various socket.io client.
 
 Features
 -------------------------------------
@@ -14,14 +14,14 @@ Features
 
 Roadmap
 -------------------------------------
-version 0.1 include:
+- version 0.1 include:
 
 * stand-alone dashboard;
 * QQ email;
 * chrome desktop notification;
 * html report;
 
-version 0.2 include:
+- version 0.2 include:
 
 * integrated with graphite;
 * android client to show alert;
