@@ -12,6 +12,17 @@ Features
  * Full stack means of alert notification: browser/desktop/mobile by message or email;
  * Open source project and open architecture, so easily to integrate 3rd part plugins;
 
+Usage
+-------------------------------------
+ start server: ::
+
+    ~$ cd logtoeye
+    .../logtoeye$ python run.py
+
+ visit dashboard: ::
+
+    http://localhost:9000/dashboard
+
 Roadmap
 -------------------------------------
  version 0.1 include:
