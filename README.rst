@@ -11,3 +11,16 @@ Features
  * Realtime data display in browser using emerging pushing technology;
  * Full stack means of alert notification: browser/desktop/mobile by message or email;
  * Open source project and open architecture, so easily to integrate 3rd part plugins;
+
+Roadmap
+=====================================
+ v0.1 include:
+ * stand-alone dashboard;
+ * QQ email;
+ * chrome desktop notification;
+ * html report;
+
+ v0.2 include:
+ * integrated with graphite;
+ * android client to show alert;
+ * desktop client in AIR app;
