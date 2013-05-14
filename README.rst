@@ -15,6 +15,7 @@ Features
 Roadmap
 -------------------------------------
  version 0.1 include:
+
  * stand-alone dashboard;
  * QQ email;
  * chrome desktop notification;
@@ -22,6 +23,6 @@ Roadmap
 
  version 0.2 include:
 
-* integrated with graphite;
-* android client to show alert;
-* desktop client in AIR app;
+ * integrated with graphite;
+ * android client to show alert;
+ * desktop client in AIR app;
