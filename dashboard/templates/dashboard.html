@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Logtoeye Dashbaord</title>
+
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/themes/ui-darkness/jquery-ui.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/themes/ui.jqgrid.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/static/css/dashboard.css" />
+
+        <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="/static/js/i18n/grid.locale-en.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.jqGrid.min.js"></script>
+        <script type="text/javascript" src="/static/js/radarchart.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.flot.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.flot.time.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.flot.resize.js"></script>
+        <script type="text/javascript" src="/static/js/dashboard.js"></script>
+    </head>
+    <body>
+        <div id="header" class="header">
+            <p class="logo-text">
+                Logtoeye Dashbaord
+                <span class="version">V0.1 for Nginx</span>
+            </p>
+        </div>
+        <div id="second-row" class="row-box">
+            <!-- left grid-->
+            <div class="left-cell">
+                <table id="west-grid" style="width: 100%"></table>
+            </div>
+            <!-- right grid-->
+            <div class="right-cell ui-jqgrid ui-widget ui-widget-content ui-corner-all">
+                <div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix">
+                    <span class="ui-jqgrid-title">Alert Scanning Radar</span>
+                </div>
+                <!-- radar chart -->
+                <canvas id="canvas" width="270" height="270"></canvas>
+                <!--<ul id="radar-list" class="radar-list">
+                    <li>Alert</li>
+                    <li>Critical</li>
+                    <li>Error</li>
+                    <li>Warning</li>
+                </ul>-->
+            </div>
+        </div>
+        <div id="third-row" class="row-box">
+            <div class="left-cell ui-jqgrid ui-widget ui-widget-content ui-corner-all">
+                <div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix">
+                    <span class="ui-jqgrid-title">SocketIO server CPU time</span>
+                </div>
+                <div id="sio-chart-placeholder" class="line-chart-placeholder"></div>
+            </div>
+            <div class="right-cell ui-jqgrid ui-widget ui-widget-content ui-corner-all">
+                <div class="ui-jqgrid-titlebar ui-widget-header ui-corner-top ui-helper-clearfix">
+                    <span class="ui-jqgrid-title">Nginx server CPU time</span>
+                </div>
+                <div id="nginx-chart-placeholder" class="line-chart-placeholder"></div>
+            </div>
+        </div>
+        <div id="footer" class="footer">
+            <p class="copyright">runbytech.com all copyright reserved</p>
+        </div>
+
+    </body>
+</html>
