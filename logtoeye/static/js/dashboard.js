@@ -12,7 +12,9 @@ WEB_SOCKET_DEBUG = true;
 // socket.io specific code, connect to a namespace(endpoint)
 var socket;
 
+
 window.onload = init;
+
 
 function init(){
     //cache all the widget here
@@ -75,9 +77,9 @@ function createNginxUrlGrid(div){
 }//end of createGrid
 
 function createRadarChart(canvas){
-    var canvas = document.getElementById(canvas);
-    var engine = new JSAnimationEngine(canvas);
-    var radar = new RadarChart(canvas, canvas.height/2);
+    var element = document.getElementById(canvas);
+    var engine = new JSAnimationEngine(element);
+    var radar = new RadarChart(element, element.height/2);
     engine.addChild(radar);
     engine.run();
     //TODO, ...
@@ -128,19 +130,6 @@ function createTimeSeries(div){
 }
 
 
-function randomData(){
-    var d2 = [];
-    var localNow = new Date();
-    var utcOffsetMiliSec = localNow.getTimezoneOffset()*60*1000;
-    localNow.setTime(localNow.getTime()-utcOffsetMiliSec);//to utc time
-    for(var i = 0; i<60; i++){
-        var passedMinutes = localNow.getTime() - i*60*1000;
-        d2.push([passedMinutes, i*Math.random()]);
-    }
-    return d2;
-}
-
-
 function connect_to_sio(){
     //connect to sio sever...
     socket = io.connect("/simplepush");//connect to SimpleNamespace
@@ -168,6 +157,7 @@ function connect_to_sio(){
 
     socket.on('_alert', function (msgs) {//listening alert event to show in radar chart
         //TODO, DISPLAY IN RADAR CHART...
+        var radar = get_widget('nginx.error.*');
 
     });
 
@@ -243,6 +233,7 @@ $(window).bind("beforeunload", function() {
 });
 
 $(window).bind("resize", function() {
+    var grid = get_widget('nginx.access.*');
     if(grid) {
         grid.setGridWidth(document.body.clientWidth*0.54, true);
     }

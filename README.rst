@@ -23,6 +23,12 @@ Usage
 
     http://localhost:9000/dashboard
 
+Dependency
+-------------------------------------
+ * gevent: https://pypi.python.org/pypi/gevent/0.13.8
+ * gevent-socketio: https://pypi.python.org/pypi/gevent-socketio/0.3.5-rc2
+ * django: https://pypi.python.org/pypi/Django/1.5.1
+
 Roadmap
 -------------------------------------
  version 0.1 include:
