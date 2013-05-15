@@ -11,7 +11,7 @@ WEB_SOCKET_DEBUG = true;
 
 // socket.io specific code, connect to a namespace(endpoint)
 var socket;
-
+var DEBUG = true;
 
 window.onload = init;
 
@@ -120,13 +120,19 @@ function createTimeSeries(div){
 					    max: localNow
                     },
                     yaxis: {
+                        min: 0,
+                        max: 100,
                         font: {
                             color: "#FFFFFF"
                         }
                     }
                   };
-    return $.plot(div, [], options);
+    var plot = $.plot(div, [], options);
+    plot.setData([[]]);//blank chart draw axis first...
+    plot.setupGrid();
+    plot.draw();
 
+    return plot;
 }
 
 
@@ -137,7 +143,7 @@ function connect_to_sio(){
     if(!socket) return;
 
     socket.on('connect', function () {
-        console.log('Connected to the server!');
+        trace('Connected to the server!');
     });
 
     socket.on('_res', function (msgs) {//listening resource event to show in the top-left grid
@@ -178,24 +184,28 @@ function connect_to_sio(){
  */
 function updateTimeSeries(msg) {
     msg.timestamp = localToUTC(msg.timestamp);
-    var orig_pts;
+    var first_series_pts;
     var merged;
     var rendered_plot;
     var orig_plot = get_widget(msg.name);
     if(orig_plot){
         trace('to update chart with: ');
-        //trace(json_obj);
-        orig_pts = orig_plot.getData()[0].data;
+        trace(msg);
+        if(orig_plot.getData().length){
+            first_series_pts = orig_plot.getData()[0].data;//get the first series only
+        }else{
+            first_series_pts = [];
+        }
         //render line chart again to create new x-axis
         rendered_plot = createTimeSeries(orig_plot.getPlaceholder());
         register_widget(msg.name, rendered_plot);//save again
 
-        merged = merge(orig_pts, [msg.timestamp, msg.value]);
+        merged = merge(first_series_pts, [msg.timestamp, msg.value]);
         rendered_plot.setData([merged]);
         rendered_plot.setupGrid();
         rendered_plot.draw();
     }else{
-        console.warn('unknown msg type: '+msg.name);
+        warn('unknown msg type: '+msg.name);
     }
 
 }//end of re-render line chart with coming data
@@ -225,8 +235,16 @@ function localToUTC(localSecond){
 
 
 function trace(obj){
+    if(!DEBUG) return;
     console.log(obj);
 }
+
+
+function warn(obj){
+    if(!DEBUG) return;
+    console.warn(obj);
+}
+
 
 $(window).bind("beforeunload", function() {
     socket.disconnect();
