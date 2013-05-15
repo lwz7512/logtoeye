@@ -17,8 +17,6 @@ window.onload = init;
 
 
 function init(){
-    //cache all the widget here
-    $.widgets = {};
 
     var grid = createNginxUrlGrid("#west-grid");
     register_widget('nginx.access.*', grid);
@@ -36,13 +34,20 @@ function init(){
 
 }//end of init
 
+//TODO, BUILD UI WITH JQUERY.CONTAINER ...
+function build_widget_grid(){
+
+}
+
 
 function register_widget(name, wgt_obj){
+    if(!$.widgets) $.widgets = {};
     $.widgets[name] = wgt_obj;
 }
 
 
 function get_widget(name){
+    if(!$.widgets) $.widgets = {};
     return $.widgets[name];
 }
 

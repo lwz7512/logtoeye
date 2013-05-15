@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic interface builder by jquery</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/themes/ui-darkness/jquery-ui.css" />
+    <script type="text/javascript" src="/static/js/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.container.js"></script>
+    <style type="text/css">
+        .row-box {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f00;
+            padding: 4px; margin: 2px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            var row = new JQBox("99%", "100px");
+            row.addClass("row-box");
+            row.append("hello world");
+            row.appendTo("body");
+            //$("body").append(row.element);
+            row.id = 'first_dyna_row';
+            console.log("the row id: "+row.id);
+
+            var widget = new JQWidget('Sample Panel', '300px', '200px');
+            widget.appendTo("body");
+            widget.addChild("hello panel!");
+        })
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

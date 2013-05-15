@@ -19,7 +19,7 @@ def dashboard(request, template="dashboard.html"):
     return render(request, template, context)
 
 
-def simplepush(request, template="display.html"):
+def builder(request, template="uibuilder.html"):
     """
     homepage...
     """
