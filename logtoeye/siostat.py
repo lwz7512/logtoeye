@@ -16,8 +16,11 @@ def collect(pid):
     sio_cpu_diff = sum(pst_sio) - sum(pre_sio)
     total_diff = (pst_total[0]+pst_total[2]) - (pre_total[0]+pre_total[2])
 
+    if total_diff == 0:
+        return 0
+
     sio_cpu_percent = sio_cpu_diff*100.00/total_diff
-    total_cpu_percent = (pst_total[0]+pst_total[2])*100/sum(pst_total)
+    # total_cpu_percent = (pst_total[0]+pst_total[2])*100/sum(pst_total)
     # print 'sio_cpu_percent: %s' % sio_cpu_diff
     # print 'total cpu percent: %s' % total_cpu_percent
 

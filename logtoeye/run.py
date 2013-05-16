@@ -6,6 +6,9 @@ __author__ = 'lwz'
 
 import os
 import sys
+import socket
+import fcntl
+import struct
 from gevent import monkey
 from socketio.server import SocketIOServer
 from nswsgihandler import NSWSGIHandler, LogSocketIOHandler
@@ -15,6 +18,29 @@ monkey.patch_all(thread=False)
 PORT = 9000
 PID_FILE = 'sio.pid'
 PID = None
+
+
+def where_am_i():
+    ip = None
+    try:
+        ip = get_ip_address('eth0')
+    except IOError:
+        try:
+            ip = get_ip_address('wlan0')
+        except IOError:
+            print 'current host is not online!'
+
+    if ip is not None:
+        print 'local ip is: %s' % ip
+
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 
 def remember():
@@ -67,6 +93,7 @@ def go():
 
 
 if __name__ == '__main__':
+    where_am_i()
     remember()
     ready()
     go()

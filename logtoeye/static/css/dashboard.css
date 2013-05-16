@@ -18,29 +18,8 @@ html, body {
     color: #CCCCCC;
 }
 
-.row-box {
-    width:99%; height: 300px; margin: 2px;
-}
-
-.left-cell {
-    height:99%; width: 54.4%; float:left;
-    margin-left: 2px; margin-right: 2px;
-}
-
-.right-cell {
-    float:right; margin: 0;
-    height:99%; width: 44.7%; /* leave a space for vertical scrollbar */
-}
-
 .radar-list {
     color: #eeeeee; float:right; margin-right: 20px;
-}
-
-.line-chart-placeholder {
-	width: 100%;
-	height: 92%;
-	font-size: 14px;
-	line-height: 1.2em;
 }
 
 .copyright {

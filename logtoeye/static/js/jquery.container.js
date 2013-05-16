@@ -32,6 +32,8 @@
  *
  */
 function JQBox(w, h){
+    this.width = w;
+    this.height = h;
     this.__container = $("<div/>");
     this.__container.css('width', w);
     this.__container.css('height', h);
@@ -46,25 +48,75 @@ function JQBox(w, h){
 }
 JQBox.prototype.css = function(style, value){
     this.__container.css(style, value);
+    return this;
 };
 JQBox.prototype.addClass = function(className){
     this.__container.addClass(className);
+    return this;
 };
 JQBox.prototype.removeClass = function(className){
     this.__container.removeClass(className);
 };
+JQBox.prototype.after = function(sibling){//sibling will be inserted after box
+    if(sibling instanceof JQBox){
+        this.__container.after(sibling.element);
+    }else{
+        this.__container.after(sibling);
+    }
+};
+JQBox.prototype.insertAfter = function(sibling){//box will be inserted after sibling
+    if(sibling instanceof JQBox){
+        this.__container.insertAfter(sibling.element);
+    }else{
+        this.__container.insertAfter(sibling);
+    }
+};
 JQBox.prototype.appendTo = function(parent){
-    this.__container.appendTo(parent);
+    if(parent instanceof JQBox){
+        this.__container.appendTo(parent.element);
+    }else{
+        this.__container.appendTo(parent);
+    }
 };
 JQBox.prototype.append = function(child){
-    this.__container.append(child);
+    if(child instanceof JQBox){
+        this.__container.append(child.element);
+    }else{
+        this.__container.append(child);
+    }
 };
 JQBox.prototype.addChild = function(child){
-    this.__container.append(child);
+    if(child instanceof JQBox){
+        this.__container.append(child.element);
+    }else{
+        this.__container.append(child);
+    }
 };
 JQBox.prototype.clone = function(){
-    return this.__container.clone();
+    var cloned = new JQBox(this.width, this.height);
+    cloned.__container = this.__container.clone();
+    return cloned;
 };
+
+
+/**
+ * extended box used in row-box
+ * @param w
+ * @param h
+ * @param position left, or right;
+ * @param hasborder true, or false;
+ * @constructor
+ */
+function Cell(w, h, position, hasborder){
+    JQBox.apply(this, [w, h]);
+
+    this.css('float', position);
+    this.css('margin-left', '2px');
+    this.css('margin-right', '2px');
+    if(hasborder) this.css('border', '1px solid #ccc');
+
+}
+Cell.prototype = JQBox.prototype;
 
 
 /**

@@ -18,6 +18,8 @@ window.onload = init;
 
 function init(){
 
+    build_widget_grid();
+
     var grid = createNginxUrlGrid("#west-grid");
     register_widget('nginx.access.*', grid);
 
@@ -37,8 +39,46 @@ function init(){
 //TODO, BUILD UI WITH JQUERY.CONTAINER ...
 function build_widget_grid(){
 
-}
+    var secondRow_leftCell = new Cell('54.4%', '99%', 'left', false);
+    var secondRow_rightCell = new Cell('44.4%', '99%', 'right', false);
+    var thirdRow_leftCell = new Cell('54.4%', '99%', 'left', false);
+    var thirdRow_rightCell = new Cell('44.4%', '99%', 'right', false);
 
+    var secondRow = new JQBox('99%', '300px');
+    secondRow.id = "second-row";
+    secondRow.css('margin', '2px');
+    secondRow.insertAfter($("#header"));
+    secondRow.addChild(secondRow_leftCell);
+    secondRow.addChild(secondRow_rightCell);
+
+    var thirdRow = new JQBox('99%', '300px');
+    thirdRow.id = "third-row";
+    thirdRow.css('margin', '2px');
+    thirdRow.insertAfter(secondRow);
+    thirdRow.addChild(thirdRow_leftCell);
+    thirdRow.addChild(thirdRow_rightCell);
+
+
+    secondRow_leftCell.addChild("<table id='west-grid'></table>");
+    var radar_widget = new JQWidget('Alert Scanning Radar', '100%', '100%');
+    radar_widget.addChild("<canvas id='canvas' width='270' height='270'/>");
+    secondRow_rightCell.addChild(radar_widget);
+
+    var sio_widget = new JQWidget('SocketIO server CPU time', '100%', '100%');
+    var chart_sio = new JQBox('100%', '92%');
+    chart_sio.id = "sio-chart-placeholder";
+    chart_sio.css('font-size', '14px').css('line-height', '1.2em');
+    sio_widget.addChild(chart_sio);
+    thirdRow_leftCell.addChild(sio_widget);
+
+    var nginx_widget = new JQWidget('Nginx server CPU time', '100%', '100%');
+    var chart_nginx = new JQBox('100%', '92%');
+    chart_nginx.id = "nginx-chart-placeholder";
+    chart_nginx.css('font-size', '14px').css('line-height', '1.2em');
+    nginx_widget.addChild(chart_nginx);
+    thirdRow_rightCell.addChild(nginx_widget);
+
+}
 
 function register_widget(name, wgt_obj){
     if(!$.widgets) $.widgets = {};
