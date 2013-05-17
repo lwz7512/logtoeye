@@ -110,9 +110,9 @@ function createNginxUrlGrid(div){
         colModel:[
             {name:'name',index:'name', width:150, align:"right", sortable:false},
             {name:'resource',index:'resource', width:150, align:"right", sortable:false},
-            {name:'value',index:'value', width:80, align:"right", sorttype:"float"},
+            {name:'value',index:'value', width:100, align:"right", sorttype:"float"},
             {name:'timestamp',index:'timestamp', width:100, align:"right", sortable:false},
-            {name:'original',index:'original', width:150,align:"center",sortable:false}
+            {name:'original',index:'original', width:130,align:"center",sortable:false}
         ],
         rowNum:10,
         hidegrid: false, //hide the fold button in title-bar
@@ -191,12 +191,25 @@ function connect_to_sio(){
         trace('Connected to the server!');
     });
 
+    var cellBackgroundBy = function(value, max){
+        var percent = value*100/max;
+        var div = "<div style='width:"+percent+"px; height:20px; padding:6px 4px 0px 4px;";
+        div += " background-image:url(/static/images/px.png); background-repeat:repeat-x;'>";
+        div += value+"</div>";
+        return div;
+    };
+
     socket.on('_res', function (msgs) {//listening resource event to show in the top-left grid
         var json_obj;
         var grid = get_widget('nginx.access.*');
         for (var i in msgs) {
             //console.log(msgs[i])
             json_obj = JSON.parse(msgs[i]);
+            if (json_obj['max']){//has max value, then to draw percent bar in value cell
+                var html_cell = cellBackgroundBy(json_obj["value"], json_obj["max"]);
+                trace(html_cell);
+                json_obj["value"] = html_cell;
+            }
             grid.addRowData(json_obj.id, json_obj, 'first');
         }
         var rowIds = grid.getDataIDs();
