@@ -62,7 +62,6 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
 
     def recv_disconnect(self):
         self.disconnect(silent=True)
-        self.request['self_reported'] = False
         self.log('client has disconnected !')
 
     # receive the message use send method...
