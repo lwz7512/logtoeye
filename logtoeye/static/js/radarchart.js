@@ -3,7 +3,7 @@
 function JSAnimationEngine (canvas) {
 	window.JSEngineChildren = [];
 	window.JSEngineFlag = true;
-        window.JSEngineCounter = 0;
+    window.JSEngineCounter = 0;
 	window.JSEngineContext = canvas.getContext('2d');
 	window.JSEngineEnterframe = function enterFrame () {		
 		
@@ -12,7 +12,7 @@ function JSAnimationEngine (canvas) {
 			
 		this.JSEngineCounter += 1;
 
-		if(this.JSEngineCounter % 2) return;
+		if(this.JSEngineCounter % 2) return;//slowdown the draw frequency to obtain a better performance
 		this.JSEngineContext.clearRect(0, 0, canvas.width, canvas.height);//***clear all before redraw...	
 		for(var i in this.JSEngineChildren){
 			this.JSEngineChildren[i].draw(this.JSEngineContext);
@@ -40,11 +40,19 @@ function RadarChart (canvas, radius) {
     this.radius = radius;
     this.angle = 0;
     this.speed = 0.01;
-    this.centerX = canvas.width/2;
-    this.centerY = canvas.height/2;            
     this.ctx = canvas.getContext('2d');
     this.ctx.translate(radius, radius);
+
+    this.targets = [];
 }
+
+RadarChart.prototype.addTarget = function(target) {
+    //TODO, CACHE TARGET;
+};
+
+RadarChart.prototype.removeTarget = function(tid) {
+    //TODO, REMOVE TAGET;
+};
 
 RadarChart.prototype.draw = function (ctx) {    
 
@@ -52,27 +60,30 @@ RadarChart.prototype.draw = function (ctx) {
     
     ctx.save();
     
-    ctx.clearRect(0, 0, this.radius, this.radius);
-    ctx.clearRect(0, 0, this.radius, -this.radius);
-    ctx.clearRect(0, 0, -this.radius, -this.radius);
-    ctx.clearRect(0, 0, -this.radius, this.radius);
+    ctx.clearRect(0, 0, this.radius, this.radius);//clear bottom right
+    ctx.clearRect(0, 0, this.radius, -this.radius);//clear top right
+    ctx.clearRect(0, 0, -this.radius, -this.radius);//clear top left
+    ctx.clearRect(0, 0, -this.radius, this.radius);//clear bottom left
+
     ctx.rotate(this.angle);
     
     ctx.arc(0, 0, this.radius, 0, (Math.PI * 2), true);
     ctx.fillStyle = "#000000";
-    ctx.fill();    
+    ctx.fill();
 
-    for(var i = 0; i< 17; i++){
-	var color = "#00FF00";
-	ctx.beginPath();
-	//x, y, radius, start_angle, end_angle, anti-clockwise
-	ctx.arc(0, 0, this.radius, 0, -Math.PI/72, true);
-	ctx.lineTo(0, 0);//up side
-	ctx.lineTo(this.radius, 0);//down side
-	ctx.fillStyle = shadeColor(color, -6*i);
-	ctx.fill();
+    //TODO, DRAW TARGETS...
 
-	ctx.rotate(-Math.PI/72+Math.PI/180);
+    for(var i = 0; i< 17; i++){//small sectors to composite the large arc
+	    var color = "#00FF00";
+	    ctx.beginPath();
+	    //x, y, radius, start_angle, end_angle, anti-clockwise
+	    ctx.arc(0, 0, this.radius, 0, -Math.PI/72, true);
+	    ctx.lineTo(0, 0);//up side
+	    ctx.lineTo(this.radius, 0);//down side
+	    ctx.fillStyle = shadeColor(color, -6*i);
+	    ctx.fill();
+
+	    ctx.rotate(-Math.PI/72+Math.PI/180);//draw next small sector
     }
 
     ctx.restore();
