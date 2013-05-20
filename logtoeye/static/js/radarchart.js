@@ -1,39 +1,5 @@
 //========== JSAnimationEngine ==========================
 //----- 2013/05/10 @lwz7512 --------------
-function JSAnimationEngine (canvas) {
-	window.JSEngineChildren = [];
-	window.JSEngineFlag = true;
-    window.JSEngineCounter = 0;
-	window.JSEngineContext = canvas.getContext('2d');
-	window.JSEngineEnterframe = function enterFrame () {		
-		
-		if(!this.JSEngineFlag) return;
-		window.requestAnimationFrame(JSEngineEnterframe, canvas);//request to redraw
-			
-		this.JSEngineCounter += 1;
-
-		if(this.JSEngineCounter % 2) return;//slowdown the draw frequency to obtain a better performance
-		this.JSEngineContext.clearRect(0, 0, canvas.width, canvas.height);//***clear all before redraw...	
-		for(var i in this.JSEngineChildren){
-			this.JSEngineChildren[i].draw(this.JSEngineContext);
-		}
-						
-	};//end of enterframe
-	
-}//end of JSAnimationEngine
-
-JSAnimationEngine.prototype.addChild = function (child) {
-	window.JSEngineChildren.push(child);
-};
-
-JSAnimationEngine.prototype.run = function () {
-    window.JSEngineFlag = true;
-    window.JSEngineEnterframe();
-};
-
-JSAnimationEngine.prototype.stop = function () {
-	window.JSEngineFlag = false;
-};
 
 //========== RadarChart ==========================
 function RadarChart (canvas, radius) {        
@@ -62,17 +28,48 @@ RadarChart.prototype.draw = function (ctx) {
     
     ctx.clearRect(0, 0, this.radius, this.radius);//clear bottom right
     ctx.clearRect(0, 0, this.radius, -this.radius);//clear top right
-    ctx.clearRect(0, 0, -this.radius, -this.radius);//clear top left
     ctx.clearRect(0, 0, -this.radius, this.radius);//clear bottom left
+    ctx.clearRect(0, 0, -this.radius, -this.radius);//clear top left
+    ctx.rotate(0);//reset context
 
-    ctx.rotate(this.angle);
-    
+    //draw black background
     ctx.arc(0, 0, this.radius, 0, (Math.PI * 2), true);
     ctx.fillStyle = "#000000";
     ctx.fill();
 
+    //draw tracks
+    ctx.beginPath();
+    for(var t = 0; t<5; t++){
+        ctx.arc(0, 0, 30+t*30, 0, (Math.PI * 2), true);
+    }
+    ctx.strokeStyle = "#333333";
+    ctx.stroke();
+
+    //draw axis
+    ctx.beginPath();
+	ctx.moveTo(-this.radius, 0);
+	ctx.lineTo(this.radius, 0);
+    ctx.moveTo(0, -this.radius);
+    ctx.lineTo(0, this.radius);
+	ctx.closePath();
+	ctx.stroke();
+
+    //draw text: Alert(red), Crit(orange), Error(yellow), Warn(blue)
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillStyle = "rgb(255, 0, 0)";
+    ctx.fillText("Alert", 4, -4);
+    ctx.fillStyle = "rgb(250, 97, 0)";
+    ctx.fillText("Crit", -30, -4);
+    ctx.fillStyle = "rgb(255, 255, 0)";
+    ctx.fillText("Error", -30, 12);
+    ctx.fillStyle = "rgb(0, 0, 255)";
+    ctx.fillText("Warn", 4, 12);
     //TODO, DRAW TARGETS...
 
+
+    //draw scanning pointer
+    //rotate the pointer every time draw
+    ctx.rotate(this.angle);
     for(var i = 0; i< 17; i++){//small sectors to composite the large arc
 	    var color = "#00FF00";
 	    ctx.beginPath();
@@ -170,7 +167,43 @@ Line.prototype.draw = function (context) {
   
   	context.restore();
 };
-;/**
+
+function JSAnimationEngine (canvas) {
+	window.JSEngineChildren = [];
+	window.JSEngineFlag = true;
+    window.JSEngineCounter = 0;
+	window.JSEngineContext = canvas.getContext('2d');
+	window.JSEngineEnterframe = function enterFrame () {
+
+		if(!this.JSEngineFlag) return;
+		window.requestAnimationFrame(JSEngineEnterframe, canvas);//request to redraw
+
+		this.JSEngineCounter += 1;
+
+		if(this.JSEngineCounter % 2) return;//slowdown the draw frequency to obtain a better performance
+		this.JSEngineContext.clearRect(0, 0, canvas.width, canvas.height);//***clear all before redraw...
+		for(var i in this.JSEngineChildren){
+			this.JSEngineChildren[i].draw(this.JSEngineContext);
+		}
+
+	};//end of enterframe
+
+}//end of JSAnimationEngine
+
+JSAnimationEngine.prototype.addChild = function (child) {
+	window.JSEngineChildren.push(child);
+};
+
+JSAnimationEngine.prototype.run = function () {
+    window.JSEngineFlag = true;
+    window.JSEngineEnterframe();
+};
+
+JSAnimationEngine.prototype.stop = function () {
+	window.JSEngineFlag = false;
+};
+
+/**
  * Normalize the browser animation API across implementations. This requests
  * the browser to schedule a repaint of the window for the next animation frame.
  * Checks for cross-browser support, and, failing to find it, falls back to setTimeout.
