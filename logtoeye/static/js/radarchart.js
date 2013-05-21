@@ -1,28 +1,130 @@
 //========== JSAnimationEngine ==========================
 //----- 2013/05/10 @lwz7512 --------------
 
-//========== RadarChart ==========================
+/**
+ * Radar chart simulate the military scenery
+ * @param canvas
+ * @param radius
+ * @constructor
+ */
 function RadarChart (canvas, radius) {        
     this.radius = radius;
     this.angle = 0;
-    this.speed = 0.01;
+    this.speed = Math.PI/180;
     this.ctx = canvas.getContext('2d');
     this.ctx.translate(radius, radius);
+    this.colors = ["#FF0000", "#FFB90F", "#FFFF00", "#0000FF"];
+    this.circles_in_track = [3, 3+5, 3+5+8, 3+5+8+10];//12, 15, 17, 20
 
-    this.targets = [];
-}
+    this.targets = [];//cache the targets to be shown
+
+}//end of constructor
+
+
+RadarChart.prototype.__drawTargets = function(){
+    var currentPosition = this.angle/Math.PI % 2;
+    var obj_groups = [0, 0, 0, 0];
+    for(var i=0; i<this.targets.length; i++){
+        if(this.targets[i]['level'] == 'alert') obj_groups[0] += 1;
+        if(this.targets[i]['level'] == 'crit') obj_groups[1] += 1;
+        if(this.targets[i]['level'] == 'error') obj_groups[2] += 1;
+        if(this.targets[i]['level'] == 'warn') obj_groups[3] += 1;
+    }
+
+    if(currentPosition>0 && currentPosition<1/2){//put in alert quadrant
+         this.__draw_quadrant(0, obj_groups[0], this.colors[0]);
+    }
+    if(currentPosition>1/2 && currentPosition<1){//put in crit quadrant
+        this.__draw_quadrant(Math.PI/2, obj_groups[1], this.colors[1]);
+    }
+    if(currentPosition>1 && currentPosition<3/2){//put in error quadrant
+        this.__draw_quadrant(Math.PI, obj_groups[2], this.colors[2]);
+    }
+    if(currentPosition>3/2 && currentPosition<2){//put in warn quadrant
+        this.__draw_quadrant(-Math.PI/2, obj_groups[3], this.colors[3]);
+    }
+};
+
+RadarChart.prototype.__draw_quadrant = function(offsetRadian, ptNum, circleColor){
+    if(offsetRadian === undefined) offsetRadian = 0;
+    if(circleColor === undefined) circleColor = "#FF0000";
+    if(ptNum == 0) return;
+
+    var filledTrackNum = 0;
+    var semi_filled_num = 0;
+    for(var t=0; t<this.circles_in_track.length; t++){
+        if(this.circles_in_track[t]<ptNum) {
+            filledTrackNum = t+1;
+        }
+    }
+    if(filledTrackNum){
+        semi_filled_num = ptNum - this.circles_in_track[filledTrackNum-1];
+    }else{
+        semi_filled_num = ptNum;
+    }
+    var each_l = 20;//radian length between each circle
+    var ball;
+    var trackNum = filledTrackNum + 1;
+    for(var i=0; i<trackNum; i++){//each track
+        var r = i*30+45;
+        if (r > this.radius) break;//do not draw beyond the radar area
+
+        var l_length_quarter = r*Math.PI/2;
+        var circe_num = Math.floor(l_length_quarter/each_l);
+        if(semi_filled_num && i == trackNum-1){//draw last track with remaining point
+            circe_num = semi_filled_num;
+        }
+        //console.log("circe_num: "+circe_num);
+        for(var j=0; j<circe_num; j++){
+            var n = each_l*(j+1)/r - 0.05 + offsetRadian;
+            var x = r*Math.cos(n);
+            var y = r*Math.sin(n);
+            ball = new Ball(8,circleColor, "#666666");
+            ball.x = x;
+            ball.y = y;
+            //console.log("n, x, y: "+n+","+x+","+y);
+            ball.draw(this.ctx);
+        }
+    }
+};
+
+
+RadarChart.prototype.__shadeColor = function(color, percent){
+    var R = parseInt(color.substring(1,3),16);
+    var G = parseInt(color.substring(3,5),16);
+    var B = parseInt(color.substring(5,7),16);
+
+    R = parseInt(R * (100 + percent) / 100);
+    G = parseInt(G * (100 + percent) / 100);
+    B = parseInt(B * (100 + percent) / 100);
+
+    R = (R<255)?R:255;
+    G = (G<255)?G:255;
+    B = (B<255)?B:255;
+
+    var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+    var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+    var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+    return "#"+RR+GG+BB;
+};
 
 RadarChart.prototype.addTarget = function(target) {
-    //TODO, CACHE TARGET;
+    var max = 104;
+    this.targets.push(target);
+    if(this.targets.length > max) this.targets.splice(0, 1);
 };
 
 RadarChart.prototype.removeTarget = function(tid) {
-    //TODO, REMOVE TAGET;
+    for(var i=0; i<this.targets.length; i++){
+        if(this.targets[i]['id'] == tid) {
+            this.targets.splice(i, 1);
+            break;
+        }
+    }
 };
 
-RadarChart.prototype.draw = function (ctx) {    
-
-    this.angle += this.speed;       
+RadarChart.prototype.draw = function (ctx) {
     
     ctx.save();
     
@@ -56,19 +158,20 @@ RadarChart.prototype.draw = function (ctx) {
 
     //draw text: Alert(red), Crit(orange), Error(yellow), Warn(blue)
     ctx.font = "bold 12px sans-serif";
-    ctx.fillStyle = "rgb(255, 0, 0)";
-    ctx.fillText("Alert", 4, -4);
-    ctx.fillStyle = "rgb(250, 97, 0)";
-    ctx.fillText("Crit", -30, -4);
-    ctx.fillStyle = "rgb(255, 255, 0)";
-    ctx.fillText("Error", -30, 12);
-    ctx.fillStyle = "rgb(0, 0, 255)";
-    ctx.fillText("Warn", 4, 12);
-    //TODO, DRAW TARGETS...
+    ctx.fillStyle = this.colors[0];
+    ctx.fillText("Alert", 4, 12);//4th quadrant
+    ctx.fillStyle = this.colors[1];
+    ctx.fillText("Crit", -30, 12);//3th quadrant
+    ctx.fillStyle = this.colors[2];
+    ctx.fillText("Error", -30, -4);//2th quadrant
+    ctx.fillStyle = this.colors[3];
+    ctx.fillText("Warn", 4, -4);//1th quadrant
 
+    this.__drawTargets();//draw the scanned targets
 
     //draw scanning pointer
-    //rotate the pointer every time draw
+    //*** rotate the pointer every time draw ***
+    this.angle += this.speed;
     ctx.rotate(this.angle);
     for(var i = 0; i< 17; i++){//small sectors to composite the large arc
 	    var color = "#00FF00";
@@ -77,35 +180,16 @@ RadarChart.prototype.draw = function (ctx) {
 	    ctx.arc(0, 0, this.radius, 0, -Math.PI/72, true);
 	    ctx.lineTo(0, 0);//up side
 	    ctx.lineTo(this.radius, 0);//down side
-	    ctx.fillStyle = shadeColor(color, -6*i);
+	    ctx.fillStyle = this.__shadeColor(color, -6*i);
 	    ctx.fill();
 
 	    ctx.rotate(-Math.PI/72+Math.PI/180);//draw next small sector
     }
 
     ctx.restore();
-};
 
-function shadeColor(color, percent) {
+};//end of draw
 
-    var R = parseInt(color.substring(1,3),16)
-    var G = parseInt(color.substring(3,5),16)
-    var B = parseInt(color.substring(5,7),16);
-
-    R = parseInt(R * (100 + percent) / 100);
-    G = parseInt(G * (100 + percent) / 100);
-    B = parseInt(B * (100 + percent) / 100);
-
-    R = (R<255)?R:255;  
-    G = (G<255)?G:255;  
-    B = (B<255)?B:255;  
-
-    var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
-    var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
-    var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
-
-    return "#"+RR+GG+BB;
-}
 
 function Ball (radius, color, borderColor) {
   if (radius === undefined) { radius = 40; }
@@ -138,6 +222,7 @@ Ball.prototype.draw = function (context) {
   if (this.lineWidth > 0) {
     context.stroke();
   }
+
   context.restore();
 };
 
@@ -171,7 +256,8 @@ Line.prototype.draw = function (context) {
 function JSAnimationEngine (canvas) {
 	window.JSEngineChildren = [];
 	window.JSEngineFlag = true;
-    window.JSEngineCounter = 0;
+    window.JSEngineCounter = -1;
+    window.lowcpu = false;
 	window.JSEngineContext = canvas.getContext('2d');
 	window.JSEngineEnterframe = function enterFrame () {
 
@@ -180,7 +266,9 @@ function JSAnimationEngine (canvas) {
 
 		this.JSEngineCounter += 1;
 
-		if(this.JSEngineCounter % 2) return;//slowdown the draw frequency to obtain a better performance
+        if(window.lowcpu){//slowdown the draw frequency to obtain a better performance
+            if(this.JSEngineCounter % 2) return;
+        }
 		this.JSEngineContext.clearRect(0, 0, canvas.width, canvas.height);//***clear all before redraw...
 		for(var i in this.JSEngineChildren){
 			this.JSEngineChildren[i].draw(this.JSEngineContext);
@@ -194,8 +282,9 @@ JSAnimationEngine.prototype.addChild = function (child) {
 	window.JSEngineChildren.push(child);
 };
 
-JSAnimationEngine.prototype.run = function () {
+JSAnimationEngine.prototype.run = function (lowcpu) {
     window.JSEngineFlag = true;
+    if(lowcpu) window.lowcpu = true;
     window.JSEngineEnterframe();
 };
 
