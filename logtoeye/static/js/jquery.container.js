@@ -113,6 +113,8 @@ function Cell(w, h, position, hasborder){
     this.css('float', position);
     this.css('margin-left', '2px');
     this.css('margin-right', '2px');
+    this.css('margin-top', '2px');
+    this.css('margin-bottom', '2px');
     if(hasborder) this.css('border', '1px solid #ccc');
 
 }

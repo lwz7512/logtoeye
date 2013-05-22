@@ -18,8 +18,21 @@ html, body {
     color: #CCCCCC;
 }
 
-.radar-list {
-    color: #eeeeee; float:right; margin-right: 20px;
+.tip{
+    position: absolute;
+    z-index: 100000;
+    border: 1px solid #444444; /*1px solid #FFD5AA;*/
+    background: #000; /* #F8FFBF;*/
+    color: #fff;  /*#000;*/
+    font: bold 80%/1 Arial;
+    padding: 5px;
+    display: none;
+    white-space: nowrap;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
 }
 
 .copyright {

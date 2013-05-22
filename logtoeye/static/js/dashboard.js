@@ -18,13 +18,27 @@ window.onload = init;
 
 function init(){
 
+    $(function(){$('*[title]').monnaTip();});
+
     build_widget_grid();
 
-    var grid = createNginxUrlGrid("#west-grid");
+    var grid = createNginxUrlGrid("#resource-grid");
     register_widget('nginx.access.*', grid);
 
     var radar = createRadarChart('canvas');
     register_widget('nginx.error.*', radar);
+    radar.list = new UList("#radar-list-placeholder");
+
+    //FIXME, JUST FOR TEST...
+    var now = new Date();
+    var last_minute = now.getTime() - 60000;
+    var llast_minute = now.getTime() - 2*60000;
+    var lllast_minute = now.getTime() - 3*60000;
+    var altObj_1 = {'id': "1",'name': 'ngnix.error.localhost', 'level': 'error', 'timestamp': now.getTime(), 'message': 'error details...'};
+    var altObj_2 = {'id': "2",'name': 'ngnix.alert.localhost', 'level': 'alert', 'timestamp': last_minute, 'message': 'alert details...'};
+    var altObj_3 = {'id': "3",'name': 'ngnix.crit.localhost', 'level': 'crit', 'timestamp': llast_minute, 'message': 'crit details...'};
+    var altObj_4 = {'id': "4",'name': 'ngnix.warn.localhost', 'level': 'warn', 'timestamp': lllast_minute, 'message': 'warn details...'};
+    radar.targets = [altObj_1, altObj_2, altObj_3, altObj_4];
 
     var plot_sio = createTimeSeries("#sio-chart-placeholder");
     register_widget('sio.cputime.minute', plot_sio);
@@ -40,9 +54,9 @@ function init(){
 function build_widget_grid(){
 
     var secondRow_leftCell = new Cell('54.4%', '99%', 'left', false);
-    var secondRow_rightCell = new Cell('44.4%', '99%', 'right', false);
+    var secondRow_rightCell = new Cell('44.6%', '99%', 'right', false);
     var thirdRow_leftCell = new Cell('54.4%', '99%', 'left', false);
-    var thirdRow_rightCell = new Cell('44.4%', '99%', 'right', false);
+    var thirdRow_rightCell = new Cell('44.6%', '99%', 'right', false);
 
     var secondRow = new JQBox('99%', '300px');
     secondRow.id = "second-row";
@@ -59,20 +73,23 @@ function build_widget_grid(){
     thirdRow.addChild(thirdRow_rightCell);
 
 
-    secondRow_leftCell.addChild("<table id='west-grid'></table>");
+    secondRow_leftCell.addChild("<table id='resource-grid'></table>");// top left data grid
     var radar_widget = new JQWidget('Alert Scanning Radar', '100%', '100%');
-    radar_widget.addChild("<canvas id='canvas' width='270' height='270'/>");
+    radar_widget.addChild("<canvas id='canvas' width='270' height='270'/>");// top right radar
+    var radar_list_box = new Cell('47%', '90%', 'right', false);// alert message list
+    radar_list_box.id = "radar-list-placeholder";
+    radar_widget.addChild(radar_list_box);
     secondRow_rightCell.addChild(radar_widget);
 
     var sio_widget = new JQWidget('SocketIO server CPU time', '100%', '100%');
-    var chart_sio = new JQBox('100%', '92%');
+    var chart_sio = new JQBox('100%', '92%');// sio chart
     chart_sio.id = "sio-chart-placeholder";
     chart_sio.css('font-size', '14px').css('line-height', '1.2em');
     sio_widget.addChild(chart_sio);
     thirdRow_leftCell.addChild(sio_widget);
 
     var nginx_widget = new JQWidget('Nginx server CPU time', '100%', '100%');
-    var chart_nginx = new JQBox('100%', '92%');
+    var chart_nginx = new JQBox('100%', '92%');// nginx chart
     chart_nginx.id = "nginx-chart-placeholder";
     chart_nginx.css('font-size', '14px').css('line-height', '1.2em');
     nginx_widget.addChild(chart_nginx);
@@ -126,12 +143,12 @@ function createRadarChart(canvas){
     var engine = new JSAnimationEngine(element);
     var radar = new RadarChart(element, element.height/2);
     engine.addChild(radar);
-    engine.run();
-    //TODO, ...
-    engine.stop();
+    engine.run(true);
+    //engine.stop();
 
     return radar;
 }
+
 
 /**
  * create one series line chart

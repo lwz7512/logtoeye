@@ -14,9 +14,17 @@ function RadarChart (canvas, radius) {
     this.ctx = canvas.getContext('2d');
     this.ctx.translate(radius, radius);
     this.colors = ["#FF0000", "#FFB90F", "#FFFF00", "#0000FF"];
-    this.circles_in_track = [3, 3+5, 3+5+8, 3+5+8+10];//12, 15, 17, 20
-
     this.targets = [];//cache the targets to be shown
+    this.circles_in_track = [3, 3+5, 3+5+8, 3+5+8+10];//12, 15, 17, 20
+    this.list = null;//to be setted outside
+
+    this.__last_level = null;
+
+    this.onchanged = function(level){
+        var highlitedItems = this.__searchTargetsBy(level);
+        if(this.list) this.list.highliteItems(highlitedItems);//render the list
+        console.log("level onchanged!");
+    }
 
 }//end of constructor
 
@@ -31,18 +39,37 @@ RadarChart.prototype.__drawTargets = function(){
         if(this.targets[i]['level'] == 'warn') obj_groups[3] += 1;
     }
 
+    var current_level;
     if(currentPosition>0 && currentPosition<1/2){//put in alert quadrant
-         this.__draw_quadrant(0, obj_groups[0], this.colors[0]);
+        this.__draw_quadrant(0, obj_groups[0], this.colors[0]);
+        current_level = "alert";
     }
     if(currentPosition>1/2 && currentPosition<1){//put in crit quadrant
         this.__draw_quadrant(Math.PI/2, obj_groups[1], this.colors[1]);
+        current_level = "crit";
     }
     if(currentPosition>1 && currentPosition<3/2){//put in error quadrant
         this.__draw_quadrant(Math.PI, obj_groups[2], this.colors[2]);
+        current_level = "error";
     }
     if(currentPosition>3/2 && currentPosition<2){//put in warn quadrant
         this.__draw_quadrant(-Math.PI/2, obj_groups[3], this.colors[3]);
+        current_level = "warn";
     }
+
+    if(current_level != this.__last_level){
+        this.onchanged(current_level);
+        this.__last_level = current_level;
+    }
+};
+
+RadarChart.prototype.__searchTargetsBy = function(level){
+    var results = [];
+    for(var i in this.targets){
+        if(this.targets[i]['level'] == level) results.push(this.targets[i]);
+    }
+
+    return results;
 };
 
 RadarChart.prototype.__draw_quadrant = function(offsetRadian, ptNum, circleColor){
@@ -140,8 +167,9 @@ RadarChart.prototype.draw = function (ctx) {
     ctx.fill();
 
     //draw tracks
+    var trackNum = Math.floor(this.radius/30);
     ctx.beginPath();
-    for(var t = 0; t<5; t++){
+    for(var t = 0; t<trackNum; t++){
         ctx.arc(0, 0, 30+t*30, 0, (Math.PI * 2), true);
     }
     ctx.strokeStyle = "#333333";
@@ -173,13 +201,14 @@ RadarChart.prototype.draw = function (ctx) {
     //*** rotate the pointer every time draw ***
     this.angle += this.speed;
     ctx.rotate(this.angle);
+    var r = trackNum*30;
     for(var i = 0; i< 17; i++){//small sectors to composite the large arc
 	    var color = "#00FF00";
 	    ctx.beginPath();
 	    //x, y, radius, start_angle, end_angle, anti-clockwise
-	    ctx.arc(0, 0, this.radius, 0, -Math.PI/72, true);
+	    ctx.arc(0, 0, r, 0, -Math.PI/72, true);
 	    ctx.lineTo(0, 0);//up side
-	    ctx.lineTo(this.radius, 0);//down side
+	    ctx.lineTo(r, 0);//down side
 	    ctx.fillStyle = this.__shadeColor(color, -6*i);
 	    ctx.fill();
 
@@ -267,7 +296,7 @@ function JSAnimationEngine (canvas) {
 		this.JSEngineCounter += 1;
 
         if(window.lowcpu){//slowdown the draw frequency to obtain a better performance
-            if(this.JSEngineCounter % 2) return;
+            if(this.JSEngineCounter % 4) return;
         }
 		this.JSEngineContext.clearRect(0, 0, canvas.width, canvas.height);//***clear all before redraw...
 		for(var i in this.JSEngineChildren){
