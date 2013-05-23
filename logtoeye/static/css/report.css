@@ -1,0 +1,38 @@
+html, body {
+            margin: 0;			/* Remove body margin/padding */
+            padding: 0;
+            /*background-color: #000000;*/
+        }
+
+.header {
+    width:99%; height: 60px; padding: 4px;
+    border-bottom: 1px solid #36648B;
+    background-color: #eeeeee;
+}
+
+.logo-text {
+    float: left;
+    width: 50%;
+    color: #0033FF;
+    margin: 10px;
+    font-size: 24pt; font-weight: bold;
+}
+
+.version {
+    font-size: 10pt; font-weight: normal;
+    color: #666666;
+}
+
+ul {
+    float: right;
+    margin: 0; padding: 0;
+}
+
+ul li {
+    float:left;
+    color: #333333; margin-left: 40px;
+}
+
+a {
+    text-decoration: none;
+}

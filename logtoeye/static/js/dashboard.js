@@ -78,6 +78,7 @@ function build_widget_grid(){
     radar_widget.addChild("<canvas id='canvas' width='270' height='270'/>");// top right radar
     var radar_list_box = new Cell('47%', '90%', 'right', false);// alert message list
     radar_list_box.id = "radar-list-placeholder";
+    radar_list_box.css('overflow', 'hidden');//clip the content
     radar_widget.addChild(radar_list_box);
     secondRow_rightCell.addChild(radar_widget);
 

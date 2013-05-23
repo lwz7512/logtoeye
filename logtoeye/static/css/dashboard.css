@@ -5,17 +5,34 @@ html, body {
         }
 
 .header {
-    background-color:#000000; width:98%; height: 40px; padding: 10px;
+    width:99%; height: 60px; padding: 4px;
 }
 
 .logo-text {
-    margin-top: 0; color: #0033FF;
+    float: left;
+    width: 50%;
+    color: #0033FF;
+    margin: 10px;
     font-size: 24pt; font-weight: bold;
 }
 
 .version {
     font-size: 10pt; font-weight: normal;
     color: #CCCCCC;
+}
+
+ul {
+    float: right;
+    margin: 0; padding: 0;
+}
+
+ul li {
+    float:left;
+    color: #eeeeee; margin-left: 40px;
+}
+
+a {
+    text-decoration: none;
 }
 
 .tip{

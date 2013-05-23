@@ -5,6 +5,8 @@ import socketio.sdjango
 
 urlpatterns = patterns("dashboard.views",
                        url("^socket\.io", include(socketio.sdjango.urls)),
-                       url(r'dashboard/$', 'dashboard', name='dashboard')
+                       url(r'dashboard/$', 'dashboard', name='dashboard'),
+                       url(r'report/$', 'report', name='dashboard'),
+                       url(r'config/$', 'config', name='dashboard'),
                        )
 
