@@ -2,8 +2,9 @@ __author__ = 'lwz'
 
 import logging
 import time
-from json import dumps
-
+import settings
+from json import dumps, loads
+from pymongo import MongoClient
 from socketio.namespace import BaseNamespace
 from socketio.mixins import RoomsMixin, BroadcastMixin
 from siostat import collect
@@ -39,6 +40,20 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger("socketio.simplepush")  # use logger defined in settings.LOGGING
         self.log("ChatNamespace session started")
+        self.init_db()
+        self.app_filters = []
+        self.find_app_filters()
+
+    def init_db(self):
+        client = MongoClient()
+        self.db = client['logtoeye']
+
+    def find_app_filters(self):
+        not_djgo_apps = [app for app in settings.INSTALLED_APPS if app.startswith('django') is not True]
+        for app in not_djgo_apps:
+            filters_module = __import__('%s.filters' % app, fromlist=['filters'], level=1)  # from parent dir to import
+            app_filters_cls = getattr(filters_module, 'filters')
+            [self.app_filters.append(flt()) for flt in app_filters_cls]  # cache all the filters in list
 
     def recv_connect(self):
         if self.request['self_reported']:  # use the shared value to avoid repeated spawn...
@@ -72,29 +87,41 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
     def log(self, message):
         self.logger.info("[{0}] {1}".format(self.socket.sessid, message))
 
-    def on_alert(self, payload):
-        # TODO, SAVE TO MANGODB FOR REPORT GENERATION...
-
-        # TODO, ADD FILTERS: DO SOMETHING BY SOME THRESHOLD VALUE...
+    def on_alert(self, payloads):
+        deserialized_metrics = [loads(metric_str) for metric_str in payloads]
+        for metric in deserialized_metrics:
+            metric_name = '.'.join(metric['name'].split('.')[:2])
+            collection = self.db[metric_name]
+            collection.insert(metric)
+            for flt_inst in self.app_filters:
+                flt_inst.filter(metric)
 
         self.log('receive alert...then announce to browser!')
         # send to browser
-        self.broadcast_event('_alert', payload)
+        self.broadcast_event('_alert', payloads)
 
-    def on_res(self, payload):
-        # TODO, SAVE TO MANGODB FOR REPORT GENERATION...
-
-        # TODO, ADD FILTERS: DO SOMETHING BY SOME THRESHOLD VALUE...
+    def on_res(self, payloads):
+        deserialized_metrics = [loads(metric_str) for metric_str in payloads]
+        for metric in deserialized_metrics:
+            metric_name = '.'.join(metric['name'].split('.')[:2])
+            collection = self.db[metric_name]
+            collection.insert(metric)
+            for flt_inst in self.app_filters:
+                flt_inst.filter(metric)
 
         self.log('receive res...then announce to browser!')
         # send to browser
-        self.broadcast_event('_res', payload)
+        self.broadcast_event('_res', payloads)
 
-    def on_pfm(self, payload):
-        # TODO, SAVE TO MANGODB FOR REPORT GENERATION...
-
-        # TODO, ADD FILTERS: DO SOMETHING BY SOME THRESHOLD VALUE...
+    def on_pfm(self, payloads):
+        deserialized_metrics = [loads(metric_str) for metric_str in payloads]
+        for metric in deserialized_metrics:
+            metric_name = '.'.join(metric['name'].split('.')[:2])
+            collection = self.db[metric_name]
+            collection.insert(metric)
+            for flt_inst in self.app_filters:
+                flt_inst.filter(metric)
 
         self.log('receive pfm...then announce to browser!')
         # send to browser
-        self.broadcast_event('_pfm', payload)
+        self.broadcast_event('_pfm', payloads)
