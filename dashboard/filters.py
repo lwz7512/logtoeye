@@ -5,12 +5,20 @@ __author__ = 'lwz'
 
 class NginxRequestTimeFilter(object):
 
-    def init(self):
-        pass
+    def __init__(self):
+        self.name = 'nginx.access'
 
     def filter(self, metric):
         print 'to filter the metric in NginxRequestFilter...'
 
 
+class SIOCPUTimeFilter(object):
 
-filters = [NginxRequestTimeFilter]
+    def __init__(self):
+        self.name = 'sio.cputime'
+
+    def filter(self, metric):
+        print 'to filter the metric in SIOCPUTimeFilter...'
+
+
+filters = [NginxRequestTimeFilter, SIOCPUTimeFilter]

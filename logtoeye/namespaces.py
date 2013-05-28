@@ -51,9 +51,14 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
     def find_app_filters(self):
         not_djgo_apps = [app for app in settings.INSTALLED_APPS if app.startswith('django') is not True]
         for app in not_djgo_apps:
-            filters_module = __import__('%s.filters' % app, fromlist=['filters'], level=1)  # from parent dir to import
-            app_filters_cls = getattr(filters_module, 'filters')
-            [self.app_filters.append(flt()) for flt in app_filters_cls]  # cache all the filters in list
+            try:
+                # from parent dir to import
+                filters_module = __import__('%s.filters' % app, fromlist=['filters'], level=1)
+                app_filters_cls = getattr(filters_module, 'filters')
+                # cache all the filters in list
+                [self.app_filters.append(flt()) for flt in app_filters_cls]
+            except ImportError:
+                self.logger.warning('Can not import filters module from : %s' % app)
 
     def recv_connect(self):
         if self.request['self_reported']:  # use the shared value to avoid repeated spawn...
@@ -69,10 +74,11 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
             metric = {'name': 'sio.cputime.minute',
                       'type': 'pfm',
                       'value': cpu_percent,
-                      'timestamp': timestamp,
-                      'id': str(timestamp)}
+                      'timestamp': timestamp,}
             # send to browser
             self.broadcast_event('_pfm', [dumps(metric)])
+            # save in db
+            self.on_pfm([dumps(metric)])
             time.sleep(60)  # have a rest for one minute
 
     def recv_disconnect(self):
@@ -94,7 +100,8 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
             collection = self.db[metric_name]
             collection.insert(metric)
             for flt_inst in self.app_filters:
-                flt_inst.filter(metric)
+                if metric_name == flt_inst.name:
+                    flt_inst.filter(metric)
 
         self.log('receive alert...then announce to browser!')
         # send to browser
@@ -107,7 +114,8 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
             collection = self.db[metric_name]
             collection.insert(metric)
             for flt_inst in self.app_filters:
-                flt_inst.filter(metric)
+                if metric_name == flt_inst.name:
+                    flt_inst.filter(metric)
 
         self.log('receive res...then announce to browser!')
         # send to browser
@@ -120,7 +128,8 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
             collection = self.db[metric_name]
             collection.insert(metric)
             for flt_inst in self.app_filters:
-                flt_inst.filter(metric)
+                if metric_name == flt_inst.name:
+                    flt_inst.filter(metric)
 
         self.log('receive pfm...then announce to browser!')
         # send to browser
