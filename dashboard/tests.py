@@ -11,7 +11,7 @@ from django.test import TestCase
 from pymongo import MongoClient
 from pymongo import DESCENDING
 from bson.code import Code
-
+from bson.son import SON
 
 
 class MongoDBTest(TestCase):
@@ -25,7 +25,7 @@ class MongoDBTest(TestCase):
 
     def test_access_count_by_client(self):
         res_3 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
-                 'timestamp': time.time()-24*60*60-1, 'original': '127.0.0.1', 'server_name': 'runbytech.com'}
+                 'timestamp': time.time()-24*60*60, 'original': '127.0.0.1', 'server_name': 'runbytech.com'}
         res_4 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/',
                  'timestamp': time.time(), 'original': '123.125.114.144', 'server_name': 'logtoeye.com'}
         res_5 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/',
@@ -46,19 +46,23 @@ class MongoDBTest(TestCase):
         print ip_query_url
         result = urllib2.urlopen(ip_query_url)
         obj = json.load(result)
-        print obj['statusCode'], obj['countryName'], obj['cityName']
+        print obj['statusCode'], ',', obj['countryName'], ',', obj['cityName']
 
     def test_last7day_access_count_by_client(self):
+        # one week ago
         res_0 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
                  'timestamp': time.time()-8*24*60*60, 'original': '127.0.0.1', 'server_name': 'localhost'}
+        # yesterday
         res_1 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
                  'timestamp': time.time()-46*60*60, 'original': '127.0.0.1', 'server_name': 'localhost'}
         res_2 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
                  'timestamp': time.time()-47*60*60, 'original': '127.0.0.1', 'server_name': 'localhost'}
         res_3 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
                  'timestamp': time.time()-48*60*60, 'original': '192.168.0.101', 'server_name': 'localhost'}
+        # last day
         res_4 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/',
                  'timestamp': time.time()-24*60*60, 'original': '192.168.0.101', 'server_name': 'localhost'}
+        # today
         res_5 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/',
                  'timestamp': time.time(), 'original': '192.168.0.101', 'server_name': 'logtoeye.com'}
         self.raw_visits.insert([res_0, res_1, res_2, res_3, res_4, res_5])
@@ -81,16 +85,81 @@ class MongoDBTest(TestCase):
                         }
                      """)
         last7day = {'timestamp': {'$gt': time.time()-7*24*60*60}}
+        # aggregate once
         self.raw_visits.map_reduce(mapper, reducer, "daily_visitors", query=last7day)  # save to daily_visitors collection
         print "-------------- daily_visitors ----------------------"
         for doc in self.db["daily_visitors"].find():
             print doc
-        maper_2 = Code("""
+        maper_twice = Code("""
                     function() {
                       emit(this['_id']['day'], {count: 1});
                     }
                     """)
-        self.db["daily_visitors"].map_reduce(maper_2, reducer, "daily_visitors_unique")
+        # aggregate twice
+        self.db["daily_visitors"].map_reduce(maper_twice, reducer, "daily_visitors_unique")
         print "---------- print daily_visitors_unique -------------"
         for doc in self.db["daily_visitors_unique"].find():
-            print doc['_id'].strftime("%Y-%m-%d"), doc['value']['count']
+            print doc['_id'].strftime("%Y-%m-%d"), ',', doc['value']['count']
+
+    def test_last_day_top10_url_visited(self):
+        res_0 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
+                 'timestamp': time.time()-24*60*60, 'original': '127.0.0.1', 'server_name': 'localhost'}
+        res_1 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
+                 'timestamp': time.time(), 'original': '192.168.0.103', 'server_name': 'localhost'}
+        res_2 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
+                 'timestamp': time.time(), 'original': '192.168.0.102', 'server_name': 'localhost'}
+        res_3 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
+                 'timestamp': time.time(), 'original': '192.168.0.101', 'server_name': 'localhost'}
+        res_4 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/',
+                 'timestamp': time.time(), 'original': '192.168.0.101', 'server_name': 'localhost'}
+        res_5 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/',
+                 'timestamp': time.time(), 'original': '192.168.0.101', 'server_name': 'logtoeye.com'}
+        self.raw_visits.insert([res_0, res_1, res_2, res_3, res_4, res_5])
+
+        mapper = Code("""
+                    function(){
+                        emit(this.resource, { count : 1 });
+                    }
+                    """)
+        reducer = Code("""
+                     function(key, values) {
+                          var count = 0;
+                          values.forEach(function(v) {
+                            count += v['count'];
+                          });
+                          return {count: count};
+                        }
+                     """)
+        query = {'timestamp': {"$gt": time.time()-24*60*60}, 'server_name': 'localhost'}
+        self.raw_visits.map_reduce(mapper, reducer, "url_rank", query=query)
+        results = self.db["url_rank"].find().sort("value", DESCENDING)
+        for doc in results:
+            # print doc
+            print doc['_id'], ',', doc['value']['count']
+
+    def test_top0_request_length(self):
+        pass
+
+    def test_lastday_alert_volume(self):
+        pass
+
+    def test_lastday_alert_by_level(self):
+        pass
+
+    def test_lastday_alert_unprocessed(self):
+        pass
+
+    def test_top10_alert_occurence(self):
+        pass
+
+    def test_nginx_cpu_avg(self):
+        pass
+
+    def test_nginx_cpu_lastday(self):
+        pass
+
+    def test_sio_cpu_avg(self):
+        pass
+
+    def test_sio_cpu_lastday(self):
+        pass
