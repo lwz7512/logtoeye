@@ -137,8 +137,27 @@ class MongoDBTest(TestCase):
             # print doc
             print doc['_id'], ',', doc['value']['count']
 
-    def test_top0_request_length(self):
-        pass
+    def test_last_day_top10_request_length(self):
+        res_0 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/2',
+                 'timestamp': time.time()-24*60*60, 'original': '127.0.0.1', 'server_name': 'localhost'}
+        res_1 = {'name': 'mock.access.192.168.0.104', 'value': 0.1, 'resource': '/blog/1',
+                 'timestamp': time.time()-1, 'original': '192.168.0.103', 'server_name': 'localhost'}
+        res_2 = {'name': 'mock.access.192.168.0.104', 'value': 0.2, 'resource': '/blog/2',
+                 'timestamp': time.time()-2, 'original': '192.168.0.102', 'server_name': 'localhost'}
+        res_3 = {'name': 'mock.access.192.168.0.104', 'value': 0.3, 'resource': '/blog/3',
+                 'timestamp': time.time()-3, 'original': '192.168.0.101', 'server_name': 'localhost'}
+        res_4 = {'name': 'mock.access.192.168.0.104', 'value': 0.01, 'resource': '/',
+                 'timestamp': time.time()-4, 'original': '192.168.0.101', 'server_name': 'localhost'}
+        res_5 = {'name': 'mock.access.192.168.0.104', 'value': 0.01, 'resource': '/',
+                 'timestamp': time.time(), 'original': '192.168.0.101', 'server_name': 'logtoeye.com'}
+        self.raw_visits.insert([res_0, res_1, res_2, res_3, res_4, res_5])
+
+        self.raw_visits.ensure_index([('timestamp', DESCENDING)])
+        condition = {"server_name": "localhost", "timestamp": {"$gt": time.time()-24*60*60}}
+        fields = {'_id': False, 'resource': True, 'value': True, 'server_name': True}
+        visits = self.raw_visits.find(spec=condition, fields=fields, limit=3, sort=[{'value', DESCENDING}])
+        for doc in visits:
+            print doc
 
     def test_lastday_alert_volume(self):
         pass
