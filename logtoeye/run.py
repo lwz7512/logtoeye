@@ -17,7 +17,8 @@ monkey.patch_all(thread=False)
 
 PORT = 9000
 PID_FILE = 'sio.pid'
-PID = None
+PID = None  # remember pid to get it's cpu time
+IP = None
 
 
 def where_am_i():
@@ -32,6 +33,9 @@ def where_am_i():
 
     if ip is not None:
         print 'local ip is: %s' % ip
+    else:
+        global IP
+        IP = ip
 
 
 def get_ip_address(ifname):
@@ -78,7 +82,7 @@ def go():
     from namespaces import SimplePushNS, RootNamespace
     # Dummy request object to maintain state between Namespace initialization.
     # just for ChatNamespace share data
-    request = {'self_reported': False, 'pid': PID}
+    request = {'self_reported': False, 'pid': PID, 'ip': IP}
     # here can assign several namespaces pair by key:value
     application = NSWSGIHandler({'': RootNamespace, '/simplepush': SimplePushNS}, request)
     sio = SocketIOServer(('0.0.0.0', PORT), application, resource="socket.io", log=None)

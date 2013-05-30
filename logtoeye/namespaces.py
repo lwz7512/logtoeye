@@ -74,7 +74,8 @@ class SimplePushNS(BaseNamespace, RoomsMixin, BroadcastMixin):
             metric = {'name': 'sio.cputime.minute',
                       'type': 'pfm',
                       'value': cpu_percent,
-                      'timestamp': timestamp,}
+                      'timestamp': timestamp,
+                      'server_name': self.request['ip']}
             # send to browser
             self.broadcast_event('_pfm', [dumps(metric)])
             # save in db
