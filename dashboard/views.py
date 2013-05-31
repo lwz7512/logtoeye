@@ -3,6 +3,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 
+import reportor
 
 # --------- url mapping method -----------------------------------------
 
@@ -42,3 +43,13 @@ def builder(request, template="uibuilder.html"):
     """
     context = {}
     return render(request, template, context)
+
+
+def preview_report(request, template="report_preview.html"):
+    """
+    homepage...
+    """
+    context = {}
+    # return render(request, template, context)
+    html = reportor.create()
+    return HttpResponse(html)

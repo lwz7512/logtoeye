@@ -9,6 +9,9 @@ import sys
 import socket
 import fcntl
 import struct
+import time
+
+import gevent
 from gevent import monkey
 from socketio.server import SocketIOServer
 from nswsgihandler import NSWSGIHandler, LogSocketIOHandler
@@ -57,6 +60,14 @@ def remember():
     f.close()
 
 
+def report():
+    def time_check():
+        while True:
+            print 'elapsed one second...'
+            time.sleep(1)
+    gevent.spawn(time_check)
+
+
 def ready():
     global PORT
     # ADD PORT PARAM IN sys.arg
@@ -99,5 +110,6 @@ def go():
 if __name__ == '__main__':
     where_am_i()
     remember()
+    # report()
     ready()
     go()

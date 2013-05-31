@@ -28,6 +28,9 @@ Dependency
  * gevent: https://pypi.python.org/pypi/gevent/0.13.8
  * gevent-socketio: https://pypi.python.org/pypi/gevent-socketio/0.3.5-rc2
  * django: https://pypi.python.org/pypi/Django/1.5.1
+ * mongoDB: http://www.mongodb.org/
+ * pymongo: https://pypi.python.org/pypi/pymongo/2.5.1
+ * WebElements: http://www.webelements.in/Home
 
 Roadmap
 -------------------------------------
