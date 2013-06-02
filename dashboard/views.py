@@ -50,6 +50,6 @@ def preview_report(request, template="report_preview.html"):
     homepage...
     """
     context = {}
-    # return render(request, template, context)
-    html = reportor.create()
-    return HttpResponse(html)
+    return render(request, template, context)
+    # html = reportor.create()
+    # return HttpResponse(html)

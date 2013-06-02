@@ -1,0 +1,16 @@
+.WClear {
+  *zoom: 1;
+}
+
+.WClear:before, .WClear:after {
+  display: table;
+  content: "";
+}
+
+.WClear:after {
+  clear: both;
+}
+
+.WLeft {
+  float: left;
+}

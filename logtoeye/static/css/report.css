@@ -37,6 +37,13 @@ a {
     text-decoration: none;
 }
 
+.center-row {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 860px;
+}
+
 .rounded-corners {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -51,4 +58,20 @@ a {
     -moz-border-radius-topright: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    text-align: center;
+}
+
+.green-big-label {
+    font-size: 28px; color: #33CC00; font-weight: bold;
+    display: inline-block; margin: 24px;
+}
+
+.black-big-label {
+    margin: 6px; display: inline-block;
+    font-size: 18px;
+}
+
+.img-placeholder {
+    width: 600px; height: 150px; background-color: #EEEEEE;
+    margin: 10px;
 }
