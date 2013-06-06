@@ -6,6 +6,7 @@ Logtoeye - Your viewport for service and files!
 Why?
 -------------------------------------
  For the most of existing software and tools in monitoring the service and log files has several problems below:
+
  - too big in size and try to including as many as possible functionality;
  - complex config and not easy to started quickly;
  - user interface may not configurable, beautiful, concise;
