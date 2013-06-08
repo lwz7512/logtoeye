@@ -1,10 +1,16 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# format keyshort in sublime text2: ctrl+shift+alt+t
+# powered by SublimePythonTidy
+
 __author__ = 'lwz'
 
 from WebElements.Display import Label
 from WebElements.Layout import Horizontal
 from WebElements.DOM import Div
 from uiwiget import CompleteDom, RoundCornerPanel
-
+# from os import path
 
 def create():
     page = CompleteDom()
@@ -40,5 +46,5 @@ def write(page_str):
     print 'report created!'
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     write(create())
