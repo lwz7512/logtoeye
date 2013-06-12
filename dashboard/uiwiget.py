@@ -2,6 +2,8 @@
 
 __author__ = 'lwz'
 
+from WebElements.Base import TextNode
+from WebElements.DataViews import Table
 from WebElements.Display import Label
 from WebElements.Document import Document
 from WebElements.DOM import Div, Link, Script, Span
@@ -59,3 +61,12 @@ class RoundCornerPanel(Div):
         title_label.setProperty('text', self.title)
         title_label.addClass('black-big-label')
         self.round_div_header.addChildElement(title_label)
+
+
+class CustomHeaderTable(Table):
+
+    def addHeader(self, columnName, showName, width):
+        header = self.addColumn(columnName)
+        header.setStyleFromString('width:%s' % width)
+        header.childElements[0].replaceWith(TextNode(showName))
+

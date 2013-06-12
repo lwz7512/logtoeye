@@ -6,11 +6,12 @@
 
 __author__ = 'lwz'
 
+
 from WebElements.Display import Label
 from WebElements.Layout import Horizontal
 from WebElements.DOM import Div
-from uiwiget import CompleteDom, RoundCornerPanel
-# from os import path
+from uiwiget import CompleteDom, RoundCornerPanel, CustomHeaderTable
+
 
 def create():
     page = CompleteDom()
@@ -34,6 +35,72 @@ def create():
     img_box = Div()
     img_box.addClass('img-placeholder')
     visit_hori_box.addChildElement(img_box)
+
+    request_title_row = Horizontal()
+    request_title_row.addClass('center-row')
+    page.addChildElement(request_title_row)
+
+    visitor_title = Label()
+    visitor_title.setProperty('text', 'Top10 Region of visitors')
+    visitor_title.addClass('black-big-label')
+    visitor_title.setStyleFromString('padding-left:20px')
+    request_title_row.addChildElement(visitor_title)
+
+    url_title = Label()
+    url_title.setProperty('text', 'Top10 Url of visitors')
+    url_title.addClass('black-big-label')
+    url_title.setStyleFromString('padding-left:60px')
+    request_title_row.addChildElement(url_title)
+
+    request_title = Label()
+    request_title.setProperty('text', 'Top10 Request time of url in ms/s')
+    request_title.addClass('black-big-label')
+    request_title.setStyleFromString('padding-left:100px')
+    request_title_row.addChildElement(request_title)
+
+    request_grid_row = Horizontal()
+    request_grid_row.addClass('center-row')
+    page.addChildElement(request_grid_row)
+
+    table = CustomHeaderTable('region_table')  # top 10 region table
+    table.setStyleFromString('width:256px; padding-left:12px')
+    request_grid_row.addChildElement(table)
+
+    table.addHeader('country', 'Country', '40%')
+    table.addHeader('city', 'City', '40%')
+    table.addHeader('amount', 'Amount', '30%')
+
+    for i in range(10):
+        row = table.addRow()
+        row.cell('country').setText('America')
+        row.cell('city').setText('Chicago')
+        row.cell('amount').setText('10')
+
+    table = CustomHeaderTable('url_table')  # top 10 url table
+    table.setStyleFromString('width:276px; padding-left:12px')
+    request_grid_row.addChildElement(table)
+
+    table.addHeader('url', 'URL', '80%')
+    table.addHeader('amount', 'Amount', '20%')
+
+    for i in range(10):
+        row = table.addRow()
+        row.cell('url').setText('/dashborad/preview')
+        row.cell('amount').setText('10')
+
+    table = CustomHeaderTable('request_table')  # top 10 request time table
+    table.setStyleFromString('width:350px; padding-left:12px')
+    request_grid_row.addChildElement(table)
+
+    table.addHeader('url', 'URL', '50%')
+    table.addHeader('time', 'Time', '30%')
+    table.addHeader('length', 'Length', '20%')
+
+    for i in range(10):
+        row = table.addRow()
+        row.cell('url').setText('/dashborad/preview')
+        row.cell('time').setText('02 00:00:00')
+        row.cell('length').setText('10')
 
     return page.__str__()
 

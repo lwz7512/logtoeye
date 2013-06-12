@@ -2,6 +2,9 @@ html, body {
             margin: 0;			/* Remove body margin/padding */
             padding: 0;
             /*background-color: #000000;*/
+            font-family: helvetica, arial, sans-serif;
+            font-size: 90%;
+            line-height: 1.25;
         }
 
 .header {
@@ -41,7 +44,7 @@ a {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 860px;
+    width: 900px;
 }
 
 .rounded-corners {
@@ -72,6 +75,6 @@ a {
 }
 
 .img-placeholder {
-    width: 600px; height: 150px; background-color: #EEEEEE;
+    width: 630px; height: 150px; background-color: #EEEEEE;
     margin: 10px;
 }
