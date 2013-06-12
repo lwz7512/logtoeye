@@ -66,7 +66,29 @@ a {
 
 .green-big-label {
     font-size: 28px; color: #33CC00; font-weight: bold;
-    display: inline-block; margin: 24px;
+    display: inline-block; margin: 26px;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #000;
+}
+
+.red-big-label {
+    font-size: 28px; color: #FF0000; font-weight: bold;
+    display: inline-block; margin: 12px;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #000;
+}
+.orange-big-label {
+    font-size: 28px; color: #f58400; font-weight: bold;
+    display: inline-block; margin: 12px;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #000;
+}
+.yellow-big-label {
+    font-size: 28px; color: #FFFF00; font-weight: bold;
+    display: inline-block; margin: 12px;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #000;
+}
+.blue-big-label {
+    font-size: 28px; color: #0033FF; font-weight: bold;
+    display: inline-block; margin: 12px;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #000;
 }
 
 .black-big-label {
@@ -75,6 +97,6 @@ a {
 }
 
 .img-placeholder {
-    width: 630px; height: 150px; background-color: #EEEEEE;
+    width: 633px; height: 150px; background-color: #EEEEEE;
     margin: 10px;
 }

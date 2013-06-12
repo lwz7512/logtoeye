@@ -54,7 +54,7 @@ class RoundCornerPanel(Div):
         self.round_div_header = Div()
         self.round_div_header.addClass('top-rounded-corners')
         self.round_div_header.setStyleFromString('background-color: #CCCCFF;')
-        self.round_div_header.setStyleFromString('width: 220px; height: 30px')
+        self.round_div_header.setStyleFromString('width: {0}px; height: 30px'.format(self.width))
         self.addChildElement(self.round_div_header)
 
         title_label = Label()

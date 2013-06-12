@@ -38,6 +38,7 @@ def create():
 
     request_title_row = Horizontal()
     request_title_row.addClass('center-row')
+    request_title_row.setStyleFromString('margin-top: 10px;')
     page.addChildElement(request_title_row)
 
     visitor_title = Label()
@@ -101,6 +102,137 @@ def create():
         row.cell('url').setText('/dashborad/preview')
         row.cell('time').setText('02 00:00:00')
         row.cell('length').setText('10')
+
+    alert_panel_row = Horizontal()
+    alert_panel_row.addClass('center-row')
+    alert_panel_row.setStyleFromString('margin-top: 20px;')
+    page.addChildElement(alert_panel_row)
+
+    alert_volume = RoundCornerPanel('Alert Volume Last Day', 220, 120)
+    volume_label = Label()
+    volume_label.setProperty('text', '1000')
+    volume_label.addClass('green-big-label')
+    alert_volume.addChildElement(volume_label)
+    alert_panel_row.addChildElement(alert_volume)
+
+    alert_statistic = RoundCornerPanel(' Alert-1 | Crit-2 | Error-3 | Warn-4 ', 280, 120)
+    alert_panel_row.addChildElement(alert_statistic)
+    label_row = Horizontal()
+    label_row.setStyleFromString('padding-top:16px;padding-left:24px')
+    alert_statistic.addChildElement(label_row)
+
+    alert_label = Label()
+    alert_label.setProperty('text', '10')
+    alert_label.addClass('red-big-label')
+    label_row.addChildElement(alert_label)
+
+    crit_label = Label()
+    crit_label.setProperty('text', '10')
+    crit_label.addClass('orange-big-label')
+    label_row.addChildElement(crit_label)
+
+    error_label = Label()
+    error_label.setProperty('text', '10')
+    error_label.addClass('yellow-big-label')
+    label_row.addChildElement(error_label)
+
+    warn_label = Label()
+    warn_label.setProperty('text', '10')
+    warn_label.addClass('blue-big-label')
+    label_row.addChildElement(warn_label)
+
+    unprocessed_stat = RoundCornerPanel(' Unprocessed Alerts by each Level ', 330, 120)
+    alert_panel_row.addChildElement(unprocessed_stat)
+    number_row = Horizontal()
+    number_row.setStyleFromString('padding-top:16px;padding-left:44px')
+    unprocessed_stat.addChildElement(number_row)
+
+    alert_label = Label()
+    alert_label.setProperty('text', '10')
+    alert_label.addClass('red-big-label')
+    number_row.addChildElement(alert_label)
+
+    crit_label = Label()
+    crit_label.setProperty('text', '10')
+    crit_label.addClass('orange-big-label')
+    number_row.addChildElement(crit_label)
+
+    error_label = Label()
+    error_label.setProperty('text', '10')
+    error_label.addClass('yellow-big-label')
+    number_row.addChildElement(error_label)
+
+    warn_label = Label()
+    warn_label.setProperty('text', '10')
+    warn_label.addClass('blue-big-label')
+    number_row.addChildElement(warn_label)
+
+    alert_occur_row = Horizontal()
+    alert_occur_row.addClass('center-row')
+    alert_occur_row.setStyleFromString('margin-top: 10px;width:300px')
+    page.addChildElement(alert_occur_row)
+
+    occur_title = Label()
+    occur_title.setProperty('text', 'Top10 Occurence of alerts')
+    occur_title.addClass('black-big-label')
+    alert_occur_row.addChildElement(occur_title)
+
+    alert_grid_row = Horizontal()
+    alert_grid_row.addClass('center-row')
+    page.addChildElement(alert_grid_row)
+
+    table = CustomHeaderTable('alert_table')  # top 10 occurence of alert
+    table.setStyleFromString('width:98%;padding-left:12px')
+    alert_grid_row.addChildElement(table)
+
+    table.addHeader('time', 'Time', '10%')
+    table.addHeader('occurence', 'Occurence', '10%')
+    table.addHeader('level', 'Level', '10%')
+    table.addHeader('title', 'Title', '20%')
+    table.addHeader('cause', 'Cause', '25%')
+    table.addHeader('details', 'Details', '25%')
+
+    for i in range(10):
+        row = table.addRow()
+        row.cell('time').setText('02 00:00:00')
+        row.cell('occurence').setText('1')
+        row.cell('level').setText('1')
+        row.cell('title').setText('xxx')
+        row.cell('cause').setText('xxxxxx')
+        row.cell('details').setText('xxxxxx')
+
+    nginx_hori_row = Horizontal()
+    nginx_hori_row.addClass('center-row')
+    nginx_hori_row.setStyleFromString('margin-top: 20px;')
+    page.addChildElement(nginx_hori_row)
+
+    nginx_cpu_panel = RoundCornerPanel('Nginx CPU Time avg')  # nginx cpu time...
+    nginx_cpu_label = Label()
+    nginx_cpu_label.setProperty('text', '30%')
+    nginx_cpu_label.addClass('green-big-label')
+    nginx_cpu_panel.addChildElement(nginx_cpu_label)
+    nginx_hori_row.addChildElement(nginx_cpu_panel)
+
+    img_box = Div()
+    img_box.addClass('img-placeholder')
+    nginx_hori_row.addChildElement(img_box)
+
+    sio_hori_row = Horizontal()
+    sio_hori_row.addClass('center-row')
+    sio_hori_row.setStyleFromString('margin-top: 20px;')
+    page.addChildElement(sio_hori_row)
+
+    sio_cpu_panel = RoundCornerPanel('SIO CPU Time avg')  # SIO cpu time...
+    sio_cpu_label = Label()
+    sio_cpu_label.setProperty('text', '20%')
+    sio_cpu_label.addClass('green-big-label')
+    sio_cpu_panel.addChildElement(sio_cpu_label)
+    sio_hori_row.addChildElement(sio_cpu_panel)
+
+    img_box = Div()
+    img_box.addClass('img-placeholder')
+    sio_hori_row.addChildElement(img_box)
+
 
     return page.__str__()
 
