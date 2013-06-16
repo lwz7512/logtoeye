@@ -9,8 +9,10 @@ __author__ = 'lwz'
 
 from WebElements.Display import Label
 from WebElements.Layout import Horizontal
-from WebElements.DOM import Div
+from WebElements.DOM import Div, Img
 from uiwiget import CompleteDom, RoundCornerPanel, CustomHeaderTable
+
+import models
 
 
 def create():
@@ -23,7 +25,7 @@ def create():
 
     visit_round_div = RoundCornerPanel('Visit Volume Last Day')
     visit_label = Label()
-    visit_label.setProperty('text', '1000/ip')
+    visit_label.setProperty('text', '1000/ip')  # ???
     visit_label.addClass('green-big-label')
     visit_round_div.addChildElement(visit_label)
     site_label = Label()
@@ -34,6 +36,10 @@ def create():
 
     img_box = Div()
     img_box.addClass('img-placeholder')
+    last_7day_visit_tendency = Img()
+    last_7day_visit_tendency.setProperty('alt', 'last 7 day visit tendency...')
+    last_7day_visit_tendency.setImage('/static/cache/xxx.png')  # ???
+    img_box.addChildElement(last_7day_visit_tendency)
     visit_hori_box.addChildElement(img_box)
 
     request_title_row = Horizontal()
@@ -71,7 +77,7 @@ def create():
     table.addHeader('city', 'City', '40%')
     table.addHeader('amount', 'Amount', '30%')
 
-    for i in range(10):
+    for i in range(10):  # ???
         row = table.addRow()
         row.cell('country').setText('America')
         row.cell('city').setText('Chicago')
@@ -84,7 +90,7 @@ def create():
     table.addHeader('url', 'URL', '80%')
     table.addHeader('amount', 'Amount', '20%')
 
-    for i in range(10):
+    for i in range(10):  # ???
         row = table.addRow()
         row.cell('url').setText('/dashborad/preview')
         row.cell('amount').setText('10')
@@ -97,7 +103,7 @@ def create():
     table.addHeader('time', 'Time', '30%')
     table.addHeader('length', 'Length', '20%')
 
-    for i in range(10):
+    for i in range(10):  # ???
         row = table.addRow()
         row.cell('url').setText('/dashborad/preview')
         row.cell('time').setText('02 00:00:00')
@@ -110,7 +116,7 @@ def create():
 
     alert_volume = RoundCornerPanel('Alert Volume Last Day', 220, 120)
     volume_label = Label()
-    volume_label.setProperty('text', '1000')
+    volume_label.setProperty('text', '1000')  # ???
     volume_label.addClass('green-big-label')
     alert_volume.addChildElement(volume_label)
     alert_panel_row.addChildElement(alert_volume)
@@ -122,22 +128,22 @@ def create():
     alert_statistic.addChildElement(label_row)
 
     alert_label = Label()
-    alert_label.setProperty('text', '10')
+    alert_label.setProperty('text', '10')  # ???
     alert_label.addClass('red-big-label')
     label_row.addChildElement(alert_label)
 
     crit_label = Label()
-    crit_label.setProperty('text', '10')
+    crit_label.setProperty('text', '10')  # ???
     crit_label.addClass('orange-big-label')
     label_row.addChildElement(crit_label)
 
     error_label = Label()
-    error_label.setProperty('text', '10')
+    error_label.setProperty('text', '10')  # ???
     error_label.addClass('yellow-big-label')
     label_row.addChildElement(error_label)
 
     warn_label = Label()
-    warn_label.setProperty('text', '10')
+    warn_label.setProperty('text', '10')  # ???
     warn_label.addClass('blue-big-label')
     label_row.addChildElement(warn_label)
 
@@ -148,22 +154,22 @@ def create():
     unprocessed_stat.addChildElement(number_row)
 
     alert_label = Label()
-    alert_label.setProperty('text', '10')
+    alert_label.setProperty('text', '10')  # ???
     alert_label.addClass('red-big-label')
     number_row.addChildElement(alert_label)
 
     crit_label = Label()
-    crit_label.setProperty('text', '10')
+    crit_label.setProperty('text', '10')  # ???
     crit_label.addClass('orange-big-label')
     number_row.addChildElement(crit_label)
 
     error_label = Label()
-    error_label.setProperty('text', '10')
+    error_label.setProperty('text', '10')  # ???
     error_label.addClass('yellow-big-label')
     number_row.addChildElement(error_label)
 
     warn_label = Label()
-    warn_label.setProperty('text', '10')
+    warn_label.setProperty('text', '10')  # ???
     warn_label.addClass('blue-big-label')
     number_row.addChildElement(warn_label)
 
@@ -192,7 +198,7 @@ def create():
     table.addHeader('cause', 'Cause', '25%')
     table.addHeader('details', 'Details', '25%')
 
-    for i in range(10):
+    for i in range(10):  # ???
         row = table.addRow()
         row.cell('time').setText('02 00:00:00')
         row.cell('occurence').setText('1')
@@ -208,13 +214,17 @@ def create():
 
     nginx_cpu_panel = RoundCornerPanel('Nginx CPU Time avg')  # nginx cpu time...
     nginx_cpu_label = Label()
-    nginx_cpu_label.setProperty('text', '30%')
+    nginx_cpu_label.setProperty('text', '30%')  # ???
     nginx_cpu_label.addClass('green-big-label')
     nginx_cpu_panel.addChildElement(nginx_cpu_label)
     nginx_hori_row.addChildElement(nginx_cpu_panel)
 
     img_box = Div()
     img_box.addClass('img-placeholder')
+    nginx_cpu_tendency = Img()
+    nginx_cpu_tendency.setProperty('alt', 'nginx cpu time tendency...')
+    nginx_cpu_tendency.setImage('/static/cache/xxx.png')  # ???
+    img_box.addChildElement(nginx_cpu_tendency)
     nginx_hori_row.addChildElement(img_box)
 
     sio_hori_row = Horizontal()
@@ -224,13 +234,17 @@ def create():
 
     sio_cpu_panel = RoundCornerPanel('SIO CPU Time avg')  # SIO cpu time...
     sio_cpu_label = Label()
-    sio_cpu_label.setProperty('text', '20%')
+    sio_cpu_label.setProperty('text', '20%')  # ???
     sio_cpu_label.addClass('green-big-label')
     sio_cpu_panel.addChildElement(sio_cpu_label)
     sio_hori_row.addChildElement(sio_cpu_panel)
 
     img_box = Div()
     img_box.addClass('img-placeholder')
+    sio_cpu_tendency = Img()
+    sio_cpu_tendency.setProperty('alt', 'sio cpu time tendency...')
+    sio_cpu_tendency.setImage('/static/cache/xxx.png')  # ???
+    img_box.addChildElement(sio_cpu_tendency)
     sio_hori_row.addChildElement(img_box)
 
 

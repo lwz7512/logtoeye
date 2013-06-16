@@ -1,3 +1,9 @@
-from django.db import models
+# define the methods fetching data from mongoDB.
 
-# Create your models here.
+
+def get_lastday_visit_voluem():
+    pass
+
+
+def get_last7day_visit_tendency_img():
+    pass
