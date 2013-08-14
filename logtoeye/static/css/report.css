@@ -8,17 +8,16 @@ html, body {
         }
 
 .header {
-    width:99%; height: 60px; padding: 4px;
-    border-bottom: 1px solid #36648B;
-    background-color: #eeeeee;
+    width:100%; height: 50px; padding: 4px;
+    background-color: #333333;
 }
 
 .logo-text {
     float: left;
-    width: 50%;
     color: #0033FF;
-    margin: 10px;
-    font-size: 24pt; font-weight: bold;
+    margin-left: 20px; margin-top: 6px;
+    font-size: 16pt; font-weight: bold;
+    display: inline-block;
 }
 
 .version {
@@ -45,6 +44,7 @@ a {
     margin-left: auto;
     margin-right: auto;
     width: 900px;
+    margin-top: 20px;
 }
 
 .rounded-corners {
@@ -99,4 +99,16 @@ a {
 .img-placeholder {
     width: 633px; height: 150px; background-color: #EEEEEE;
     margin: 10px;
+}
+
+.subtopic-ctnr {
+    width: 120px; height: 100%;
+    display: inline-block;
+    float: right;
+}
+
+.white-label {
+    font-size: 14px; color: #FFFFFF; font-weight: bold;
+    display: inline-block;
+    margin-left: 20px; margin-top: 20px;
 }
