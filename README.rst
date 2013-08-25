@@ -3,6 +3,13 @@ Logtoeye - Your viewport for service and files!
  Logtoeye is a realtime data visualization platform based on django/socket.io/gevent-socketio,
  it's dashboard can display metric/non-metric data instantly pushed from various socket.io client.
 
+Sigh...
+-------------------------------------
+this project is in sleep status for a long time, and no plan to restart!
+And, the original design is not good to mix django server and socketio server.
+So, if possible to restart it, be sure to separate the two!
+2013/08/25
+
 Why?
 -------------------------------------
  For the most of existing software and tools in monitoring the service and log files has several problems below:
